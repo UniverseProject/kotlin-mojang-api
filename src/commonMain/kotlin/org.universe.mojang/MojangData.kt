@@ -37,6 +37,7 @@ public data class ProfileName(val name: String, val changedToAt: Long? = null)
  * @property skin Base64 of the skin texture information.
  * @property signature Signature of the base64-encoded texture information.
  */
+@Serializable
 public data class ProfileSkin(
     val id: String,
     val name: String,
