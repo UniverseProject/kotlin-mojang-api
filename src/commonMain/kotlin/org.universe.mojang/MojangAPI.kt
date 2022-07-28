@@ -3,6 +3,7 @@ package org.universe.mojang
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.request.*
+import io.ktor.client.statement.*
 import io.ktor.http.*
 
 public interface MojangAPI {
@@ -60,8 +61,10 @@ public interface MojangAPI {
      * Allows users to find the username history of a Minecraft profile
      * https://mojang-api-docs.netlify.app/no-auth/name-history.html
      * @param uuid Player's UUID.
-     * @return List of [ProfileName] with at least one element (current name) followed by the previous name,
-     * `null` if no player is linked to the [uuid].
+     * @return List of [ProfileName].
+     * The first name is the older, so the [ProfileName.changedToAt] is null, the following names
+     * are the most recent and contain all a value for [ProfileName.changedToAt].
+     * The function returns `null` if the uuid is not linked to a player.
      */
     public suspend fun historyName(uuid: String): List<ProfileName>?
 }
@@ -74,7 +77,9 @@ public class MojangAPIImpl(private val client: HttpClient) : MojangAPI {
     }
 
     override suspend fun blockedServers(): List<String> {
-        return client.get("https://sessionserver.mojang.com/blockedservers").body()
+        return client.get("https://sessionserver.mojang.com/blockedservers") {
+          accept(ContentType.Text.Plain)
+        }.bodyAsText().lines()
     }
 
     override suspend fun getUUID(name: String): ProfileId? {
