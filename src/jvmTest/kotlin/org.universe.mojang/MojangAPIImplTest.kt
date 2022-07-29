@@ -21,7 +21,6 @@ class MojangAPIImplTest {
 
     private lateinit var mojangApi: MojangAPI
 
-
     @BeforeTest
     fun onBefore() {
         val jsonInstance = Json {
