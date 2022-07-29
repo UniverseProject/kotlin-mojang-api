@@ -6,7 +6,13 @@ import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
 
+/**
+ * Allows interact with Mojang API.
+ */
 public interface MojangAPI {
+
+    // Sale statistics endpoint https://mojang-api-docs.netlify.app/no-auth/sale-stats.html
+    // is no longer valid with the defined parameters
 
     /**
      * Retrieve a hashed information for all blocked server by Mojang.
@@ -69,6 +75,10 @@ public interface MojangAPI {
     public suspend fun historyName(uuid: String): List<ProfileName>?
 }
 
+/**
+ * Implementation to interact with Mojang API using a custom coroutine client.
+ * @property client Coroutine http client used to interact with api.
+ */
 public class MojangAPIImpl(private val client: HttpClient) : MojangAPI {
 
     override suspend fun usernameAvailable(name: String): Boolean {
