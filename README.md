@@ -61,7 +61,7 @@ suspend fun main() {
 ## Build
 
 To build the project, you need to use the gradle app in the application [gradlew.bat](gradlew.bat) for windows
-and [gradlew](gradlew) for linux).
+and [gradlew](gradlew) for linux.
 `gradlew` is a wrapper to run gradle command without install it on our computer.
 
 ````shell
