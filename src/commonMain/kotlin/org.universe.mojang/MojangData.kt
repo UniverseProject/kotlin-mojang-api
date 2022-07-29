@@ -25,7 +25,7 @@ public data class ProfileId(val name: String, val id: String)
  * @property changedToAt Unix epoch time format, in milliseconds. If the value is `null`, so the [name] is currently used by the player.
  */
 @Serializable
-public data class ProfileName(val name: String, val changedToAt: Long? = null)
+public data class ProfileName(val name: String, val changedToAt: Long = 0)
 
 /**
  * Expected response of the Mojang api to retrieve player skin from an uuid.
