@@ -21,6 +21,7 @@ class MojangAPIImplTest {
 
     private lateinit var mojangApi: MojangAPI
 
+
     @BeforeTest
     fun onBefore() {
         val jsonInstance = Json {
@@ -58,10 +59,7 @@ class MojangAPIImplTest {
         @Test
         fun `with an existing player name`() = runTest {
             val name = "lukethehacker23"
-            val profileId = mojangApi.getUUID(name)
-            assertNotNull(profileId)
-            assertEquals(name, profileId.name)
-            assertEquals("cdb5aee80f904fdda63ba16d38cd6b3b", profileId.id)
+            assertEquals(ProfileId(name, "cdb5aee80f904fdda63ba16d38cd6b3b"), mojangApi.getUUID(name))
         }
 
         @Test
@@ -88,24 +86,61 @@ class MojangAPIImplTest {
     @DisplayName("Get players uuid from list")
     inner class GetUUIDs() {
 
+        private val limitNumberOfName = 10
+
         @Test
-        fun `without existing player name`() {
-            TODO()
+        fun `without player name`() {
+            assertThrows<ClientRequestException> {
+                runBlocking { mojangApi.getUUID(emptyList()) }
+            }
+        }
+
+        @Test
+        fun `with non existing player name`() = runTest {
+            val profiles = mojangApi.getUUID(listOf(generateRandomName()))
+            assertTrue { profiles.isEmpty() }
+        }
+
+        @Test
+        fun `with existing player name`() = runTest {
+            assertContentEquals(
+                listOf(
+                    ProfileId("jeb_", "853c80ef3c3749fdaa49938b674adae6"),
+                    ProfileId("Notch", "069a79f444e94726a5befca90e38aaf5")
+                ),
+                mojangApi.getUUID(listOf("Notch", "jeb_"))
+            )
+        }
+
+        @Test
+        fun `with existing and non existing player name`() = runTest {
+            assertContentEquals(
+                listOf(
+                    ProfileId("jeb_", "853c80ef3c3749fdaa49938b674adae6"),
+                ),
+                mojangApi.getUUID(listOf(generateRandomName(), "jeb_", generateRandomName()))
+            )
         }
 
         @Test
         fun `too many names`() {
-            TODO()
+            val names = List(limitNumberOfName + 1) { generateRandomName() }
+            assertThrows<ClientRequestException> {
+                runBlocking { mojangApi.getUUID(names) }
+            }
         }
 
         @Test
         fun `with a player name with invalid length`() {
-            TODO()
+            assertThrows<ClientRequestException> {
+                runBlocking { mojangApi.getUUID(listOf(generateUUIDOversize())) }
+            }
         }
 
         @Test
         fun `with a player name with invalid character`() {
-            TODO()
+            val names = listOf(generateRandomName())
+            runBlocking { mojangApi.getUUID(names) }
         }
     }
 
@@ -116,10 +151,7 @@ class MojangAPIImplTest {
         @Test
         fun `with an existing player uuid`() = runTest {
             val uuid = "cdb5aee80f904fdda63ba16d38cd6b3b"
-            val profileId = mojangApi.getName(uuid)
-            assertNotNull(profileId)
-            assertEquals("lukethehacker23", profileId.name)
-            assertEquals(uuid, profileId.id)
+            assertEquals(ProfileId("lukethehacker23", uuid), mojangApi.getName(uuid))
         }
 
         @Test
@@ -207,27 +239,23 @@ class MojangAPIImplTest {
 
         @Test
         fun `player has never changed name`() = runTest {
-            val history = mojangApi.historyName("069a79f444e94726a5befca90e38aaf5")
-            assertNotNull(history)
-            assertEquals(1, history.size)
-
-            val profileName = history.first()
-            assertEquals("Notch", profileName.name)
-            assertNull(profileName.changedToAt)
+            assertContentEquals(
+                listOf(
+                    ProfileName("Notch", 0)
+                ),
+                mojangApi.historyName("069a79f444e94726a5befca90e38aaf5")
+            )
         }
 
         @Test
         fun `player has changed name several times`() = runTest {
-            val history = mojangApi.historyName("b4a93b09-e37c-448f-83ba-0eaf510524b5")
-            assertNotNull(history)
-            assertEquals(2, history.size)
-
-            val (previous, current) = history
-            assertEquals("TIC59000", previous.name)
-            assertNull(previous.changedToAt)
-
-            assertEquals("Distractic", current.name)
-            assertEquals(1423059429000L, current.changedToAt)
+            assertContentEquals(
+                listOf(
+                    ProfileName("TIC59000", 0),
+                    ProfileName("Distractic", 1423059429000)
+                ),
+                mojangApi.historyName("b4a93b09-e37c-448f-83ba-0eaf510524b5")
+            )
         }
 
         @Test
@@ -243,6 +271,11 @@ class MojangAPIImplTest {
                 runBlocking { mojangApi.getSkin(generateUUIDWithInvalidSymbol()) }
             }
         }
+    }
+
+    private fun generateRandomName(): String {
+        val validCharRanges: List<Char> = ('a'..'z') + ('A'..'Z') + ('0'..'9')
+        return generateSequence { validCharRanges.random() }.take(16).joinToString("")
     }
 
     private fun generateUUIDOversize() = generateRandomUUID() + "a"
