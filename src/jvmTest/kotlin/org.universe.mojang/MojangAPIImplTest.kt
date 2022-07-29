@@ -53,6 +53,33 @@ class MojangAPIImplTest {
     }
 
     @Nested
+    @DisplayName("Check if username is available")
+    inner class UsernameAvailable {
+
+        @Test
+        fun `username not available`() = runTest {
+            assertFalse { mojangApi.usernameAvailable("Notch") }
+        }
+
+        @Test
+        fun `username is available`() = runTest {
+            assertTrue { mojangApi.usernameAvailable(generateRandomName()) }
+        }
+
+        @Test
+        fun `with a player name with invalid length`() = runTest {
+            assertTrue { mojangApi.usernameAvailable("a") }
+        }
+
+        @Test
+        fun `with a player name with invalid character`() {
+            assertThrows<ClientRequestException> {
+                runBlocking { mojangApi.usernameAvailable(generateRandomNameWithInvalidSymbol()) }
+            }
+        }
+    }
+
+    @Nested
     @DisplayName("Get player uuid")
     inner class GetUUID() {
 
@@ -68,16 +95,14 @@ class MojangAPIImplTest {
         }
 
         @Test
-        fun `with a player name with invalid length`() {
-            assertThrows<ClientRequestException> {
-                runBlocking { mojangApi.getUUID(generateUUIDOversize()) }
-            }
+        fun `with a player name with invalid length`() = runTest {
+            assertNull(mojangApi.getUUID("a"))
         }
 
         @Test
         fun `with a player name with invalid character`() {
             assertThrows<ClientRequestException> {
-                runBlocking { mojangApi.getUUID(generateUUIDWithInvalidSymbol()) }
+                runBlocking { mojangApi.getUUID(generateRandomNameWithInvalidSymbol()) }
             }
         }
     }
@@ -131,16 +156,16 @@ class MojangAPIImplTest {
         }
 
         @Test
-        fun `with a player name with invalid length`() {
-            assertThrows<ClientRequestException> {
-                runBlocking { mojangApi.getUUID(listOf(generateUUIDOversize())) }
-            }
+        fun `with a player name with invalid length`() = runTest {
+            assertEquals(emptyList(), mojangApi.getUUID(listOf("a")))
         }
 
         @Test
         fun `with a player name with invalid character`() {
-            val names = listOf(generateRandomName())
-            runBlocking { mojangApi.getUUID(names) }
+            val names = listOf(generateRandomNameWithInvalidSymbol())
+            assertThrows<ClientRequestException> {
+                runBlocking { mojangApi.getUUID(names) }
+            }
         }
     }
 
@@ -162,7 +187,7 @@ class MojangAPIImplTest {
         @Test
         fun `with a player uuid with invalid length`() {
             assertThrows<ClientRequestException> {
-                runBlocking { mojangApi.getName(generateUUIDOversize()) }
+                runBlocking { mojangApi.getName("a") }
             }
         }
 
@@ -216,7 +241,7 @@ class MojangAPIImplTest {
         @Test
         fun `with a player uuid with invalid length`() {
             assertThrows<ClientRequestException> {
-                runBlocking { mojangApi.getSkin(generateUUIDOversize()) }
+                runBlocking { mojangApi.getSkin("a") }
             }
         }
 
@@ -261,24 +286,24 @@ class MojangAPIImplTest {
         @Test
         fun `with a player uuid with invalid length`() {
             assertThrows<ClientRequestException> {
-                runBlocking { mojangApi.historyName(generateUUIDOversize()) }
+                runBlocking { mojangApi.historyName("a") }
             }
         }
 
         @Test
         fun `with a player uuid with invalid character`() {
             assertThrows<ClientRequestException> {
-                runBlocking { mojangApi.getSkin(generateUUIDWithInvalidSymbol()) }
+                runBlocking { mojangApi.historyName(generateUUIDWithInvalidSymbol()) }
             }
         }
     }
+
+    private fun generateRandomNameWithInvalidSymbol() = generateRandomName().drop(1) + "&"
 
     private fun generateRandomName(): String {
         val validCharRanges: List<Char> = ('a'..'z') + ('A'..'Z') + ('0'..'9')
         return generateSequence { validCharRanges.random() }.take(16).joinToString("")
     }
-
-    private fun generateUUIDOversize() = generateRandomUUID() + "a"
 
     private fun generateUUIDWithInvalidSymbol() = generateRandomUUID().drop(1) + "&"
 
