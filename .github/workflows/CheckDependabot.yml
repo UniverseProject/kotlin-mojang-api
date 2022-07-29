@@ -20,9 +20,4 @@ jobs:
     - name: Build
       uses: gradle/gradle-build-action@v2.1.7
       with:
-        arguments: build -x test
-
-    - name: Test
-      uses: gradle/gradle-build-action@v2.1.7
-      with:
-        arguments: test
+        arguments: build
