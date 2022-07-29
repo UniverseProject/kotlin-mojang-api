@@ -64,7 +64,7 @@ class MojangAPIImplTest {
 
         @Test
         fun `with an unknown player name`() = runTest {
-            assertNull(mojangApi.getUUID("a"))
+            assertNull(mojangApi.getUUID(generateRandomName()))
         }
 
         @Test
