@@ -88,11 +88,10 @@ public class MojangAPIImpl(private val client: HttpClient) : MojangAPI {
     }
 
     override suspend fun getUUID(names: Collection<String>): List<ProfileId> {
-        val response = client.post("https://api.mojang.com/profiles/minecraft") {
+        return client.post("https://api.mojang.com/profiles/minecraft") {
             contentType(ContentType.Application.Json)
             setBody(names)
-        }
-        return response.body()
+        }.body()
     }
 
     override suspend fun getName(uuid: String): ProfileId? {
@@ -102,12 +101,12 @@ public class MojangAPIImpl(private val client: HttpClient) : MojangAPI {
 
     override suspend fun getSkin(uuid: String): ProfileSkin? {
         val response = client.get("https://sessionserver.mojang.com/session/minecraft/profile/$uuid?unsigned=false")
-        return if (response.status == HttpStatusCode.NoContent) null else response.body()
+        return if (response.status == HttpStatusCode.OK) response.body() else null
     }
 
     override suspend fun historyName(uuid: String): List<ProfileName>? {
         val response = client.get("https://api.mojang.com/user/profile/${uuid}/names")
-        return if (response.status == HttpStatusCode.NoContent) null else response.body()
+        return if (response.status == HttpStatusCode.OK) response.body() else null
     }
 
 }
