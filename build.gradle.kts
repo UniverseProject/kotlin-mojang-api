@@ -1,6 +1,8 @@
 plugins {
     kotlin("multiplatform") version "1.7.10"
     kotlin("plugin.serialization") version "1.7.10"
+    `maven-publish`
+    signing
 }
 
 group = "org.universe"
@@ -63,5 +65,70 @@ kotlin {
         val jsTest by getting
         val nativeMain by getting
         val nativeTest by getting
+    }
+}
+
+publishing {
+    val isReleaseVersion = !version.toString().endsWith("SNAPSHOT")
+    val publicationDefault = "default"
+
+    publications {
+        create<MavenPublication>(publicationDefault) {
+            pom {
+                name.set(project.name)
+                description.set(project.description)
+
+                issueManagement {
+                    system.set("GitHub")
+                    url.set("https://github.com/UniverseProject/kotlin-mojang-api/issues")
+                }
+
+                ciManagement {
+                    system.set("GitHub Actions")
+                }
+
+                licenses {
+                    license {
+                        name.set("MIT")
+                        url.set("https://mit-license.org/")
+                        distribution.set("repo")
+                        comments.set("A business-friendly OSS license")
+                    }
+                }
+
+                scm {
+                    connection.set("scm:git:https://github.com/UniverseProject/kotlin-mojang-api.git")
+                    developerConnection.set("scm:git:git@github.com:UniverseProject/kotlin-mojang-api.git")
+                    url.set("https://github.com/UniverseProject/kotlin-mojang-api")
+                }
+
+                distributionManagement {
+                    downloadUrl.set("https://github.com/UniverseProject/kotlin-mojang-api/releases")
+                }
+            }
+        }
+    }
+
+    repositories {
+        maven {
+            name = "OSSRH"
+            url = if (isReleaseVersion) {
+                uri("https://oss.sonatype.org/service/local/staging/deploy/maven2/")
+            } else {
+                uri("https://oss.sonatype.org/content/repositories/snapshots/")
+            }
+
+            credentials {
+                username = System.getenv("MAVEN_USERNAME")
+                password = System.getenv("MAVEN_PASSWORD")
+            }
+        }
+
+        signing {
+            val signingKey = System.getenv("SIGNING_KEY")
+            val signingPassword = System.getenv("SIGNING_PASSWORD")
+            useInMemoryPgpKeys(signingKey, signingPassword)
+            sign(publishing.publications[publicationDefault])
+        }
     }
 }
