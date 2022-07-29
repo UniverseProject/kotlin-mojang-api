@@ -14,8 +14,8 @@ The project is compiled to :
 - [Java 17](https://www.oracle.com/java/technologies/javase/jdk17-archive-downloads.html)
 - [JavaScript](https://www.javascript.com/)
 - Native
-See [Multiplatform documentation](https://kotlinlang.org/docs/multiplatform.html)
 
+See [Multiplatform documentation](https://kotlinlang.org/docs/multiplatform.html)
 
 ## Use in your projects
 
