@@ -22,6 +22,7 @@ jobs:
       with:
         arguments: publish
       env:
+        PUBLISH_MAVEN: true
         REPOSITORY_USERNAME: ${{ secrets.REPOSITORY_USERNAME }}
         REPOSITORY_PASSWORD: ${{ secrets.REPOSITORY_PASSWORD }}
         SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
