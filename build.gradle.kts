@@ -1,12 +1,14 @@
 plugins {
     kotlin("multiplatform") version "1.7.10"
     kotlin("plugin.serialization") version "1.7.10"
+    id("org.jetbrains.dokka") version "1.7.10"
     `maven-publish`
     signing
 }
 
 group = "io.github.universeproject"
 version = "1.0"
+description = "Allows interaction with Mojang API using Kotlin and coroutine"
 
 repositories {
     mavenCentral()
@@ -36,7 +38,6 @@ kotlin {
         isMingwX64 -> mingwX64("native")
         else -> throw GradleException("Host OS is not supported in Kotlin/Native.")
     }
-
 
     sourceSets {
         val commonMain by getting {
@@ -68,23 +69,37 @@ kotlin {
     }
 }
 
+/**
+ * Whether the process has been invoked to publish in maven.
+ */
+val isPublishToMaven = "true" == System.getenv("PUBLISH_MAVEN")
+
+val dokkaHtml by tasks.getting(org.jetbrains.dokka.gradle.DokkaTask::class)
+
+val javadocJar: TaskProvider<Jar> by tasks.registering(Jar::class) {
+    dependsOn(dokkaHtml)
+    archiveClassifier.set("javadoc")
+    from(dokkaHtml.outputDirectory)
+}
+
 publishing {
-    val publicationDefault = "default"
     val isReleaseVersion = !version.toString().endsWith("SNAPSHOT")
-    /**
-     * Whether the process has been invoked to publish in maven.
-     */
-    val isPublishToMaven = "true" == System.getenv("PUBLISH_MAVEN")
 
     publications {
-        create<MavenPublication>(publicationDefault) {
+        create<MavenPublication>(project.name) {
+            from(components["kotlin"])
+            artifact(javadocJar)
+
             pom {
+                val projectGitUrl = "https://github.com/UniverseProject/kotlin-mojang-api"
                 name.set(project.name)
                 description.set(project.description)
+                url.set(projectGitUrl)
 
+                inceptionYear.set("2022")
                 issueManagement {
                     system.set("GitHub")
-                    url.set("https://github.com/UniverseProject/kotlin-mojang-api/issues")
+                    url.set("$projectGitUrl/issues")
                 }
 
                 ciManagement {
@@ -95,17 +110,29 @@ publishing {
                     license {
                         name.set("MIT")
                         url.set("https://mit-license.org/")
+                        distribution.set("repo")
+                        comments.set("A business-friendly OSS license")
+                    }
+                }
+
+                developers {
+                    developer {
+                        id.set("Distractic")
+                        name.set("Distractic")
+                        email.set("Distractic@outlook.fr")
+                        url.set("https://github.com/Distractic")
+                        timezone.set("Europe/Paris")
                     }
                 }
 
                 scm {
-                    connection.set("scm:git:https://github.com/UniverseProject/kotlin-mojang-api.git")
+                    connection.set("scm:git:$projectGitUrl.git")
                     developerConnection.set("scm:git:git@github.com:UniverseProject/kotlin-mojang-api.git")
-                    url.set("https://github.com/UniverseProject/kotlin-mojang-api")
+                    url.set(projectGitUrl)
                 }
 
                 distributionManagement {
-                    downloadUrl.set("https://github.com/UniverseProject/kotlin-mojang-api/releases")
+                    downloadUrl.set("$projectGitUrl/releases")
                 }
             }
         }
@@ -116,9 +143,9 @@ publishing {
             maven {
                 name = "OSSRH"
                 url = if (isReleaseVersion) {
-                    uri("https://oss.sonatype.org/service/local/staging/deploy/maven2/")
+                    uri("https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/")
                 } else {
-                    uri("https://oss.sonatype.org/content/repositories/snapshots/")
+                    uri("https://s01.oss.sonatype.org/content/repositories/snapshots/")
                 }
 
                 credentials {
@@ -126,13 +153,15 @@ publishing {
                     password = System.getenv("REPOSITORY_PASSWORD")
                 }
             }
-
-            signing {
-                val signingKey = System.getenv("SIGNING_KEY")
-                val signingPassword = System.getenv("SIGNING_PASSWORD")
-                useInMemoryPgpKeys(signingKey, signingPassword)
-                sign(publishing.publications[publicationDefault])
-            }
         }
+    }
+}
+
+if(isPublishToMaven) {
+    signing {
+        val signingKey = System.getenv("SIGNING_KEY")
+        val signingPassword = System.getenv("SIGNING_PASSWORD")
+        useInMemoryPgpKeys(signingKey, signingPassword)
+        sign(publishing.publications[project.name])
     }
 }
