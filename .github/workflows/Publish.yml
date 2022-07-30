@@ -1,0 +1,29 @@
+name: Publish
+
+on:
+  release:
+    types:
+      - published
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout project
+      uses: actions/checkout@v3
+
+    - name: Initialization
+      uses: ./.github/actions/init
+      with:
+        jdk: 17
+
+    - name: Build
+      uses: gradle/gradle-build-action@v2.2.2
+      with:
+        arguments: publish
+      env:
+        PUBLISH_MAVEN: true
+        REPOSITORY_USERNAME: ${{ secrets.REPOSITORY_USERNAME }}
+        REPOSITORY_PASSWORD: ${{ secrets.REPOSITORY_PASSWORD }}
+        SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
+        SIGNING_PASSWORD: ${{ secrets.SIGNING_PASSWORD }}
