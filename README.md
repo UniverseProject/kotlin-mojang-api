@@ -23,7 +23,7 @@ Currently, no artifact is published. It will be done soon.
 
 ### API
 
-The [Mojang API Implementation](src/commonMain/kotlin/org.universe.mojang/MojangAPI.kt) allows you to easily interact
+The [Mojang API Implementation](src/commonMain/kotlin/io/github/universeproject/MojangAPI.kt) allows you to easily interact
 with API. You just need to define a [Http client](https://ktor.io/docs/create-client.html) from [Ktor](https://ktor.io/).
 
 ```kotlin
@@ -32,8 +32,8 @@ import io.ktor.client.engine.cio.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.serialization.kotlinx.json.*
 import kotlinx.serialization.json.Json
-import org.universe.mojang.MojangAPI
-import org.universe.mojang.MojangAPIImpl
+import io.github.universeproject.MojangAPI
+import io.github.universeproject.MojangAPIImpl
 
 suspend fun main() {
     // We advise to ignore unknown keys in case of api change

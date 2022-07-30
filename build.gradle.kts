@@ -5,7 +5,7 @@ plugins {
     signing
 }
 
-group = "org.universe"
+group = "io.github.universeproject"
 version = "1.0"
 
 repositories {
@@ -69,8 +69,12 @@ kotlin {
 }
 
 publishing {
-    val isReleaseVersion = !version.toString().endsWith("SNAPSHOT")
     val publicationDefault = "default"
+    val isReleaseVersion = !version.toString().endsWith("SNAPSHOT")
+    /**
+     * Whether the process has been invoked to publish in maven.
+     */
+    val isPublishToMaven = "true" == System.getenv("PUBLISH_MAVEN")
 
     publications {
         create<MavenPublication>(publicationDefault) {
@@ -109,26 +113,30 @@ publishing {
         }
     }
 
-    repositories {
-        maven {
-            name = "OSSRH"
-            url = if (isReleaseVersion) {
-                uri("https://oss.sonatype.org/service/local/staging/deploy/maven2/")
-            } else {
-                uri("https://oss.sonatype.org/content/repositories/snapshots/")
+    if(isPublishToMaven) {
+        repositories {
+            maven {
+                name = "OSSRH"
+                url = if (isReleaseVersion) {
+                    uri("https://oss.sonatype.org/service/local/staging/deploy/maven2/")
+                } else {
+                    uri("https://oss.sonatype.org/content/repositories/snapshots/")
+                }
+
+                credentials {
+                    username = System.getenv("MAVEN_USERNAME")
+                    password = System.getenv("MAVEN_PASSWORD")
+                }
             }
 
-            credentials {
-                username = System.getenv("MAVEN_USERNAME")
-                password = System.getenv("MAVEN_PASSWORD")
+            signing {
+                val signingKey = System.getenv("SIGNING_KEY")
+                val signingPassword = System.getenv("SIGNING_PASSWORD")
+                useInMemoryPgpKeys(signingKey, signingPassword)
+                sign(publishing.publications[publicationDefault])
             }
-        }
-
-        signing {
-            val signingKey = System.getenv("SIGNING_KEY")
-            val signingPassword = System.getenv("SIGNING_PASSWORD")
-            useInMemoryPgpKeys(signingKey, signingPassword)
-            sign(publishing.publications[publicationDefault])
         }
     }
+
+
 }

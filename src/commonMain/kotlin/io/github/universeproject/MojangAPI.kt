@@ -1,4 +1,4 @@
-package org.universe.mojang
+package io.github.universeproject
 
 import io.ktor.client.*
 import io.ktor.client.call.*
