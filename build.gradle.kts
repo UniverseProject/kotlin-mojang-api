@@ -124,8 +124,8 @@ publishing {
                 }
 
                 credentials {
-                    username = System.getenv("MAVEN_USERNAME")
-                    password = System.getenv("MAVEN_PASSWORD")
+                    username = System.getenv("REPOSITORY_USERNAME")
+                    password = System.getenv("REPOSITORY_PASSWORD")
                 }
             }
 
