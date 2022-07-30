@@ -95,8 +95,6 @@ publishing {
                     license {
                         name.set("MIT")
                         url.set("https://mit-license.org/")
-                        distribution.set("repo")
-                        comments.set("A business-friendly OSS license")
                     }
                 }
 
