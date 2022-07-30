@@ -19,7 +19,7 @@ public interface MojangAPI {
      * https://mojang-api-docs.netlify.app/no-auth/blocked-servers.html
      * @return List of hash.
      */
-    public suspend fun blockedServers(): List<String>
+    public suspend fun getBlockedServers(): List<String>
 
     /**
      * Checks if a username is available or taken.
@@ -28,7 +28,7 @@ public interface MojangAPI {
      * @param name Player's name.
      * @return `true` if the name is available, `false` otherwise.
      */
-    public suspend fun usernameAvailable(name: String): Boolean
+    public suspend fun isUsernameAvailable(name: String): Boolean
 
     /**
      * Allows users to supply a username to be checked and get its UUID if the username resolves to a valid Minecraft profile.
@@ -72,7 +72,7 @@ public interface MojangAPI {
      * are the most recent and contain all a value for [ProfileName.changedToAt].
      * The function returns `null` if the uuid is not linked to a player.
      */
-    public suspend fun historyName(uuid: String): List<ProfileName>?
+    public suspend fun getHistoryName(uuid: String): List<ProfileName>?
 }
 
 /**
@@ -81,12 +81,12 @@ public interface MojangAPI {
  */
 public class MojangAPIImpl(private val client: HttpClient) : MojangAPI {
 
-    override suspend fun usernameAvailable(name: String): Boolean {
+    override suspend fun isUsernameAvailable(name: String): Boolean {
         val response = client.get("https://account.mojang.com/available/minecraft/${name}")
         return response.status == HttpStatusCode.NoContent
     }
 
-    override suspend fun blockedServers(): List<String> {
+    override suspend fun getBlockedServers(): List<String> {
         return client.get("https://sessionserver.mojang.com/blockedservers") {
           accept(ContentType.Text.Plain)
         }.bodyAsText().lines()
@@ -114,7 +114,7 @@ public class MojangAPIImpl(private val client: HttpClient) : MojangAPI {
         return if (response.status == HttpStatusCode.OK) response.body() else null
     }
 
-    override suspend fun historyName(uuid: String): List<ProfileName>? {
+    override suspend fun getHistoryName(uuid: String): List<ProfileName>? {
         val response = client.get("https://api.mojang.com/user/profile/${uuid}/names")
         return if (response.status == HttpStatusCode.OK) response.body() else null
     }

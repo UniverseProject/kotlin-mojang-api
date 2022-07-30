@@ -46,7 +46,7 @@ class MojangAPIImplTest {
                 "504af2f6dafe46fe1abf5f4a022afac50bb70dc4",
                 "9628751744cdb9f833b1e58b51dbdfca0a0dd722"
             )
-            val blockedServers = mojangApi.blockedServers()
+            val blockedServers = mojangApi.getBlockedServers()
             assertTrue { blockedServers.containsAll(expectedBlockedServers) }
         }
     }
@@ -57,23 +57,23 @@ class MojangAPIImplTest {
 
         @Test
         fun `username not available`() = runTest {
-            assertFalse { mojangApi.usernameAvailable("Notch") }
+            assertFalse { mojangApi.isUsernameAvailable("Notch") }
         }
 
         @Test
         fun `username is available`() = runTest {
-            assertTrue { mojangApi.usernameAvailable(generateRandomName()) }
+            assertTrue { mojangApi.isUsernameAvailable(generateRandomName()) }
         }
 
         @Test
         fun `with a player name with invalid length`() = runTest {
-            assertTrue { mojangApi.usernameAvailable("a") }
+            assertTrue { mojangApi.isUsernameAvailable("a") }
         }
 
         @Test
         fun `with a player name with invalid character`() {
             assertThrows<ClientRequestException> {
-                runBlocking { mojangApi.usernameAvailable(generateRandomNameWithInvalidSymbol()) }
+                runBlocking { mojangApi.isUsernameAvailable(generateRandomNameWithInvalidSymbol()) }
             }
         }
     }
@@ -258,7 +258,7 @@ class MojangAPIImplTest {
 
         @Test
         fun `player uuid not exists`() = runTest {
-            assertNull(mojangApi.historyName(generateRandomUUID()))
+            assertNull(mojangApi.getHistoryName(generateRandomUUID()))
         }
 
         @Test
@@ -267,7 +267,7 @@ class MojangAPIImplTest {
                 listOf(
                     ProfileName("Notch", 0)
                 ),
-                mojangApi.historyName("069a79f444e94726a5befca90e38aaf5")
+                mojangApi.getHistoryName("069a79f444e94726a5befca90e38aaf5")
             )
         }
 
@@ -278,21 +278,21 @@ class MojangAPIImplTest {
                     ProfileName("TIC59000", 0),
                     ProfileName("Distractic", 1423059429000)
                 ),
-                mojangApi.historyName("b4a93b09-e37c-448f-83ba-0eaf510524b5")
+                mojangApi.getHistoryName("b4a93b09-e37c-448f-83ba-0eaf510524b5")
             )
         }
 
         @Test
         fun `with a player uuid with invalid length`() {
             assertThrows<ClientRequestException> {
-                runBlocking { mojangApi.historyName("a") }
+                runBlocking { mojangApi.getHistoryName("a") }
             }
         }
 
         @Test
         fun `with a player uuid with invalid character`() {
             assertThrows<ClientRequestException> {
-                runBlocking { mojangApi.historyName(generateUUIDWithInvalidSymbol()) }
+                runBlocking { mojangApi.getHistoryName(generateUUIDWithInvalidSymbol()) }
             }
         }
     }
