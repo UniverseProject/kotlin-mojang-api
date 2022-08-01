@@ -14,10 +14,6 @@ subprojects {
     apply(plugin = "plugin.serialization")
 }
 
-group = "io.github.universeproject"
-version = "1.0.0"
-description = "Allows interaction with Mojang API using Kotlin and coroutine"
-
 repositories {
     mavenCentral()
 }
