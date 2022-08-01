@@ -1,12 +1,22 @@
 plugins {
     kotlin("multiplatform") version "1.7.10"
     kotlin("plugin.serialization") version "1.7.10"
+    id("org.jetbrains.dokka") version "1.7.10"
+    id("io.github.gradle-nexus.publish-plugin") version "1.1.0"
     `maven-publish`
     signing
 }
 
+subprojects {
+    apply(plugin = "signing")
+    apply(plugin = "maven-publish")
+    apply(plugin = "org.jetbrains.dokka")
+    apply(plugin = "plugin.serialization")
+}
+
 group = "io.github.universeproject"
-version = "1.0"
+version = "1.0.0"
+description = "Allows interaction with Mojang API using Kotlin and coroutine"
 
 repositories {
     mavenCentral()
@@ -14,6 +24,7 @@ repositories {
 
 val ktorVersion: String by project
 val ktSerializationVersion: String by project
+val coroutineVersion: String by project
 
 kotlin {
     explicitApi = org.jetbrains.kotlin.gradle.dsl.ExplicitApiMode.Strict
@@ -37,7 +48,6 @@ kotlin {
         else -> throw GradleException("Host OS is not supported in Kotlin/Native.")
     }
 
-
     sourceSets {
         val commonMain by getting {
             dependencies {
@@ -52,7 +62,7 @@ kotlin {
         val commonTest by getting {
             dependencies {
                 implementation(kotlin("test"))
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4")
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutineVersion")
             }
         }
         val jvmMain by getting
@@ -68,70 +78,87 @@ kotlin {
     }
 }
 
-publishing {
-    val publicationDefault = "default"
-    val isReleaseVersion = !version.toString().endsWith("SNAPSHOT")
-    /**
-     * Whether the process has been invoked to publish in maven.
-     */
-    val isPublishToMaven = "true" == System.getenv("PUBLISH_MAVEN")
+nexusPublishing {
+    repositories {
+        sonatype {
+            nexusUrl.set(uri("https://s01.oss.sonatype.org/service/local/"))
+            snapshotRepositoryUrl.set(uri("https://s01.oss.sonatype.org/content/repositories/snapshots/"))
+            username.set(System.getenv("REPOSITORY_USERNAME"))
+            password.set(System.getenv("REPOSITORY_PASSWORD"))
+        }
+    }
+}
 
-    publications {
-        create<MavenPublication>(publicationDefault) {
-            pom {
-                name.set(project.name)
-                description.set(project.description)
-
-                issueManagement {
-                    system.set("GitHub")
-                    url.set("https://github.com/UniverseProject/kotlin-mojang-api/issues")
-                }
-
-                ciManagement {
-                    system.set("GitHub Actions")
-                }
-
-                licenses {
-                    license {
-                        name.set("MIT")
-                        url.set("https://mit-license.org/")
-                    }
-                }
-
-                scm {
-                    connection.set("scm:git:https://github.com/UniverseProject/kotlin-mojang-api.git")
-                    developerConnection.set("scm:git:git@github.com:UniverseProject/kotlin-mojang-api.git")
-                    url.set("https://github.com/UniverseProject/kotlin-mojang-api")
-                }
-
-                distributionManagement {
-                    downloadUrl.set("https://github.com/UniverseProject/kotlin-mojang-api/releases")
-                }
-            }
+configure(allprojects) {
+    val signingKey: String? = System.getenv("SIGNING_KEY")
+    val signingPassword: String? = System.getenv("SIGNING_PASSWORD")
+    if(signingKey != null && signingPassword != null) {
+        signing {
+            useInMemoryPgpKeys(signingKey, signingPassword)
+            sign(publishing.publications)
         }
     }
 
-    if(isPublishToMaven) {
-        repositories {
-            maven {
-                name = "OSSRH"
-                url = if (isReleaseVersion) {
-                    uri("https://oss.sonatype.org/service/local/staging/deploy/maven2/")
-                } else {
-                    uri("https://oss.sonatype.org/content/repositories/snapshots/")
-                }
+    publishing {
+        val dokkaOutputDir = "$buildDir/dokka/${this@configure.name}"
 
-                credentials {
-                    username = System.getenv("REPOSITORY_USERNAME")
-                    password = System.getenv("REPOSITORY_PASSWORD")
-                }
-            }
+        tasks.dokkaHtml {
+            outputDirectory.set(file(dokkaOutputDir))
+        }
 
-            signing {
-                val signingKey = System.getenv("SIGNING_KEY")
-                val signingPassword = System.getenv("SIGNING_PASSWORD")
-                useInMemoryPgpKeys(signingKey, signingPassword)
-                sign(publishing.publications[publicationDefault])
+        val deleteDokkaOutputDir by tasks.register<Delete>("deleteDokkaOutputDirectory") {
+            delete(dokkaOutputDir)
+        }
+
+        val javadocJar = tasks.register<Jar>("javadocJar") {
+            dependsOn(deleteDokkaOutputDir, tasks.dokkaHtml)
+            archiveClassifier.set("javadoc")
+            from(dokkaOutputDir)
+        }
+
+        publications {
+            val projectGitUrl = "https://github.com/UniverseProject/kotlin-mojang-api"
+            withType<MavenPublication> {
+                artifact(javadocJar)
+                pom {
+                    name.set(this@configure.name)
+                    description.set(project.description)
+                    url.set(projectGitUrl)
+
+                    issueManagement {
+                        system.set("GitHub")
+                        url.set("$projectGitUrl/issues")
+                    }
+
+                    ciManagement {
+                        system.set("GitHub Actions")
+                    }
+
+                    licenses {
+                        license {
+                            name.set("MIT")
+                            url.set("https://mit-license.org/")
+                        }
+                    }
+
+                    developers {
+                        developer {
+                            name.set("Distractic")
+                            email.set("Distractic@outlook.fr")
+                            url.set("https://github.com/Distractic")
+                        }
+                    }
+
+                    scm {
+                        connection.set("scm:git:$projectGitUrl.git")
+                        developerConnection.set("scm:git:git@github.com:UniverseProject/kotlin-mojang-api.git")
+                        url.set(projectGitUrl)
+                    }
+
+                    distributionManagement {
+                        downloadUrl.set("$projectGitUrl/releases")
+                    }
+                }
             }
         }
     }

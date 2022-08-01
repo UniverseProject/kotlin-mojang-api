@@ -20,9 +20,8 @@ jobs:
     - name: Build
       uses: gradle/gradle-build-action@v2.2.2
       with:
-        arguments: publish
+        arguments: publishToSonatype closeAndReleaseSonatypeStagingRepository
       env:
-        PUBLISH_MAVEN: true
         REPOSITORY_USERNAME: ${{ secrets.REPOSITORY_USERNAME }}
         REPOSITORY_PASSWORD: ${{ secrets.REPOSITORY_PASSWORD }}
         SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
