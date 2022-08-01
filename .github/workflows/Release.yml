@@ -1,0 +1,35 @@
+name: Release tag
+
+on:
+  workflow_dispatch:
+    inputs:
+      releaseVersion:
+        type: string
+        required: true
+        description: Version to release (major.minor.patch) (example 2.0.1)
+
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout project
+        uses: actions/checkout@v3
+
+      - name: Set git user
+        uses: ./.github/actions/git
+        with:
+          name: ${{ secrets.GIT_USER }}
+          email: ${{ secrets.GIT_EMAIL }}
+
+      - name: Initialization
+        uses: ./.github/actions/init
+
+      - name: Release tag
+        uses: gradle/gradle-build-action@v2.2.2
+        with:
+          arguments: release -Prelease.useAutomaticVersion=true -Prelease.releaseVersion=${{ github.event.inputs.releaseVersion }}

@@ -1,0 +1,19 @@
+name: Git user
+description: Set the user information for git usage
+
+inputs:
+  name:
+    description: Name of the git user.
+    required: true
+  email:
+    description: Email of the git user.
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - name: Set git user information
+      shell: bash
+      run: |
+        git config --global user.name ${{ inputs.name }}
+        git config --global user.email ${{ inputs.email }}
