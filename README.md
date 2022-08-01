@@ -1,4 +1,4 @@
-# kotlin-mojang-api
+_# kotlin-mojang-api
 
 This project allows interaction with [Mojang API](https://mojang-api-docs.netlify.app/)
 using [Kotlin](https://kotlinlang.org/) and [coroutine](https://kotlinlang.org/docs/coroutines-overview.html).
@@ -17,11 +17,82 @@ The project is compiled to :
 
 See [Multiplatform documentation](https://kotlinlang.org/docs/multiplatform.html)
 
-## Use in your projects
+## Installation
 
-Currently, no artifact is published. It will be done soon.
+The project is published in **Maven central**.
 
-### API
+The vers
+
+### Gradle (groovy)
+
+```groovy
+repositories {
+    mavenCentral()
+}
+```
+
+---
+
+```groovy
+dependencies {
+  // for jvm environment
+  implementation("io.github.universeproject:kotlin-mojang-api-jvm:{version}")
+  // for js environment
+  implementation("io.github.universeproject:kotlin-mojang-api-js:{version}")
+  // for native environment
+  implementation("io.github.universeproject:kotlin-mojang-api-native:{version}")
+}
+```
+
+### Gradle (kotlin)
+
+```kotlin
+repositories {
+    mavenCentral()
+}
+```
+
+---
+
+```kotlin
+dependencies {
+  // for jvm environment
+  implementation("io.github.universeproject:kotlin-mojang-api-jvm:{version}")
+  // for js environment
+  implementation("io.github.universeproject:kotlin-mojang-api-js:{version}")
+  // for native environment
+  implementation("io.github.universeproject:kotlin-mojang-api-native:{version}")
+}
+```
+
+### Maven
+
+```xml
+<dependencies>
+  <!-- for jvm environment -->
+  <dependency>
+      <groupId>io.github.universeproject</groupId>
+      <artifactId>kotlin-mojang-api-jvm</artifactId>
+      <version>{version}</version>
+  </dependency>
+  
+  <!-- for js environment -->
+  <dependency>
+    <groupId>io.github.universeproject</groupId>
+    <artifactId>kotlin-mojang-api-js</artifactId>
+    <version>{version}</version>
+  </dependency>
+  
+  <!-- for native environment -->
+  <dependency>
+    <groupId>io.github.universeproject</groupId>
+    <artifactId>kotlin-mojang-api-native</artifactId>
+    <version>{version}</version>
+  </dependency>
+</dependencies>
+```
+
+## API
 
 The [Mojang API Implementation](src/commonMain/kotlin/io/github/universeproject/MojangAPI.kt) allows you to easily interact
 with API. You just need to define a [Http client](https://ktor.io/docs/create-client.html) from [Ktor](https://ktor.io/).
@@ -104,13 +175,13 @@ For example, if the latest version is `1.2.1`, you can create the next release t
 
 ````shell
 # Patch release
-gradle release -Prelease.useAutomaticVersion=true -Prelease.releaseVersion=1.2.2
+gradle release -Prelease.useAutomaticVersion=true -Prelease.releaseVersion=1.2.2 -Prelease.newVersion=1.2.3-SNAPSHOT
 
 # Minor release
-gradle release -Prelease.useAutomaticVersion=true -Prelease.releaseVersion=1.3.0
+gradle release -Prelease.useAutomaticVersion=true -Prelease.releaseVersion=1.3.0 -Prelease.newVersion=1.3.1-SNAPSHOT
 
 # Major release
-gradle release -Prelease.useAutomaticVersion=true -Prelease.releaseVersion=2.0.0
+gradle release -Prelease.useAutomaticVersion=true -Prelease.releaseVersion=2.0.0 -Prelease.newVersion=2.0.1-SNAPSHOT
 ````
 
 For the convention, you can check this [link](http://semver.org/).
