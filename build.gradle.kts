@@ -160,3 +160,7 @@ configure(allprojects) {
         }
     }
 }
+
+release {
+    tagTemplate.set("v${version}")
+}
