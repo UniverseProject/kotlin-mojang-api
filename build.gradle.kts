@@ -19,10 +19,6 @@ repositories {
     mavenCentral()
 }
 
-release {
-    failOnCommitNeeded.set(false)
-}
-
 val ktorVersion: String by project
 val ktSerializationVersion: String by project
 val coroutineVersion: String by project
