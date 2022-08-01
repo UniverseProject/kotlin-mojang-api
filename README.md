@@ -149,9 +149,11 @@ If, for X reason, you want to publish the artifact yourself, you need to define 
 - REPOSITORY_USERNAME (Access User Token username)
 - REPOSITORY_PASSWORD (Access User Token password)
 - SIGNING_KEY (Gpg private key)
-    - ````shell
-      gpg --export-secret-keys -a <keyid> > privatekey.key
-      ````
+````shell
+# Export you private key in the file privatekey.key
+# replace <keyid> by you gpg key id
+gpg --export-secret-keys -a <keyid> > privatekey.key
+````
 - SIGNING_PASSWORD (Gpg password)
 
 After defining the variables, you can execute one of this commande :
