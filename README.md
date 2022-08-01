@@ -150,7 +150,7 @@ If, for X reason, you want to publish the artifact yourself, you need to define 
 - REPOSITORY_PASSWORD (Access User Token password)
 - SIGNING_KEY (Gpg private key)
 ````shell
-# Export you private key in the file privatekey.key
+# Export your private key in the file privatekey.key
 # replace <keyid> by you gpg key id
 gpg --export-secret-keys -a <keyid> > privatekey.key
 ````
