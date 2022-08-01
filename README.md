@@ -1,4 +1,6 @@
-_# kotlin-mojang-api
+# kotlin-mojang-api
+
+TODO INSERT MAVEN IMG
 
 This project allows interaction with [Mojang API](https://mojang-api-docs.netlify.app/)
 using [Kotlin](https://kotlinlang.org/) and [coroutine](https://kotlinlang.org/docs/coroutines-overview.html).
@@ -21,7 +23,7 @@ See [Multiplatform documentation](https://kotlinlang.org/docs/multiplatform.html
 
 The project is published in **Maven central**.
 
-The vers
+The version is TODO INSERT MAVEN IMG
 
 ### Gradle (groovy)
 
