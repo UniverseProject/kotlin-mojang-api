@@ -13,7 +13,7 @@ coroutines for the I/O operations.
 [Gradle](https://gradle.org/) is used to manage dependencies because he's the more friendly with Kotlin.
 
 The project is compiled to :
-- [Java 17](https://www.oracle.com/java/technologies/javase/jdk17-archive-downloads.html)
+- [Java 8](https://www.oracle.com/java/technologies/javase/javase8-archive-downloads.html)
 - [JavaScript](https://www.javascript.com/)
 - Native
 
@@ -137,9 +137,9 @@ This section is dedicated to the maintainers of the project.
 
 ## Build
 
-To build the project, you need to use the gradle app in the application [gradlew.bat](gradlew.bat) for windows
-and [gradlew](gradlew) for linux.
-`gradlew` is a wrapper to run gradle command without install it on our computer.
+To build the project, you need to use the gradle app ([gradlew.bat](gradlew.bat) for windows
+and [gradlew](gradlew) for linux).
+`gradlew` is a wrapper to run gradle command without install it on your computer.
 
 ````shell
 gradlew build
@@ -148,7 +148,7 @@ gradlew build
 ## Test
 
 The tests are created using [Kotlin test](https://kotlinlang.org/api/latest/kotlin.test/).
-To simplify the conception of tests, the common tests are placed in [JVM test](src/jvmTest) module.
+To simplify the conception of tests, some common tests are placed in [JVM test](src/jvmTest) module.
 
 ### Run tests
 
@@ -198,9 +198,9 @@ At this moment, no artifact is published in repository.
 
 If you need new credentials to publish in repository, you need to follow this tutorial :
 
-- You need that I add you as publisher of the repository in [Sonatype issues](https://issues.sonatype.org/browse/OSSRH-83171)
+- You need me to add you as publisher of the repository in [Sonatype issues](https://issues.sonatype.org/browse/OSSRH-83171)
   - Create an account
-  - Ask me to add you in the publisher
+  - Ask me to add you in the publishers list
 - Generate a [Gpg key pair](https://central.sonatype.org/publish/requirements/gpg/#deployment)
 - When you get the permission, you can check in the [Sonatype staging](https://s01.oss.sonatype.org/#stagingRepositories) if you can log in and see artifacts.
 - Generate [Access User Token](https://s01.oss.sonatype.org/#profile;User%20Token) for security
@@ -208,12 +208,12 @@ If you need new credentials to publish in repository, you need to follow this tu
 
 ## Automatic
 
-To publish the artifacts, you need to create a release on the repository github.
+To publish the artifacts, you need to create a release on the GitHub repository.
 When you create your release, select your created tag and explain all changes.
 
-When the release is published, **automatically**, the CI/CD will try to create and publish the artifacts in repository artifacts.
+When the release is published, **automatically**, the CI/CD will try to create and publish in the artifact repository.
 
-The CI/CD uses Github Secret to publish in repository artifact, so you could need to replace the current secret of the github repository.
+The CI/CD uses GitHub Secret to publish in artifact repository, so you may need to replace the current secret of the GitHub repository.
 
 #### Manual
 
@@ -229,7 +229,7 @@ gpg --export-secret-keys -a <keyid> > privatekey.key
 ````
 - SIGNING_PASSWORD (Gpg password)
 
-After defining the variables, you can execute one of this commande :
+After defining the variables, you can run one the following commands :
 
 ##### Manual close
 
@@ -240,7 +240,7 @@ gradle publishToSentry
 ````
 
 You can check if the artifact is correctly in [Sonatype staging](https://s01.oss.sonatype.org/#stagingRepositories) repository.
-If he's present, you can `close` to active the check by repository and if all is good, you can `release` to publish the artifact in production.
+If he's present, you can `close` to trigger the check by repository and if all is good, you can `release` to publish the artifact in production.
 
 ##### Automatic close
 
