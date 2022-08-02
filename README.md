@@ -1,6 +1,6 @@
 # kotlin-mojang-api
 
-TODO INSERT MAVEN IMG
+[![Download](https://maven-badges.herokuapp.com/maven-central/io.github.universeproject/kotlin-mojang-api/badge.svg?style=for-the-badge&logo=appveyor)](https://search.maven.org/search?q=g:io.github.universeproject)
 
 This project allows interaction with [Mojang API](https://mojang-api-docs.netlify.app/)
 using [Kotlin](https://kotlinlang.org/) and [coroutine](https://kotlinlang.org/docs/coroutines-overview.html).
@@ -21,9 +21,9 @@ See [Multiplatform documentation](https://kotlinlang.org/docs/multiplatform.html
 
 ## Installation
 
-The project is published in **Maven central**.
+Replace `{version}` with the latest version number on **Maven central**.
 
-The version is TODO INSERT MAVEN IMG
+[![Download](https://maven-badges.herokuapp.com/maven-central/io.github.universeproject/kotlin-mojang-api/badge.svg?style=flat)](https://search.maven.org/search?q=g:io.github.universeproject)
 
 ### Gradle (groovy)
 
@@ -199,8 +199,8 @@ At this moment, no artifact is published in repository.
 If you need new credentials to publish in repository, you need to follow this tutorial :
 
 - You need that I add you as publisher of the repository in [Sonatype issues](https://issues.sonatype.org/browse/OSSRH-83171)
-    - Create an account
-    - Ask me to add you in the publisher
+  - Create an account
+  - Ask me to add you in the publisher
 - Generate a [Gpg key pair](https://central.sonatype.org/publish/requirements/gpg/#deployment)
 - When you get the permission, you can check in the [Sonatype staging](https://s01.oss.sonatype.org/#stagingRepositories) if you can log in and see artifacts.
 - Generate [Access User Token](https://s01.oss.sonatype.org/#profile;User%20Token) for security
