@@ -1,5 +1,8 @@
 # kotlin-mojang-api
 
+[![Discord](https://img.shields.io/discord/977166213467734056.svg?color=&label=Discord&logo=discord&style=for-the-badge)](https://discord.gg/EQyycAUZtt)
+[![Download](https://maven-badges.herokuapp.com/maven-central/io.github.universeproject/kotlin-mojang-api/badge.svg?style=for-the-badge&logo=appveyor)](https://search.maven.org/search?q=g:io.github.universeproject)
+
 This project allows interaction with [Mojang API](https://mojang-api-docs.netlify.app/)
 using [Kotlin](https://kotlinlang.org/) and [coroutine](https://kotlinlang.org/docs/coroutines-overview.html).
 
@@ -11,17 +14,88 @@ coroutines for the I/O operations.
 [Gradle](https://gradle.org/) is used to manage dependencies because he's the more friendly with Kotlin.
 
 The project is compiled to :
-- [Java 17](https://www.oracle.com/java/technologies/javase/jdk17-archive-downloads.html)
+- [Java 8](https://www.oracle.com/java/technologies/javase/javase8-archive-downloads.html)
 - [JavaScript](https://www.javascript.com/)
 - Native
 
 See [Multiplatform documentation](https://kotlinlang.org/docs/multiplatform.html)
 
-## Use in your projects
+## Installation
 
-Currently, no artifact is published. It will be done soon.
+Replace `{version}` with the latest version number on **Maven central**.
 
-### API
+[![Download](https://maven-badges.herokuapp.com/maven-central/io.github.universeproject/kotlin-mojang-api/badge.svg?style=flat)](https://search.maven.org/search?q=g:io.github.universeproject)
+
+### Gradle (groovy)
+
+```groovy
+repositories {
+    mavenCentral()
+}
+```
+
+---
+
+```groovy
+dependencies {
+  // for jvm environment
+  implementation("io.github.universeproject:kotlin-mojang-api-jvm:{version}")
+  // for js environment
+  implementation("io.github.universeproject:kotlin-mojang-api-js:{version}")
+  // for native environment
+  implementation("io.github.universeproject:kotlin-mojang-api-native:{version}")
+}
+```
+
+### Gradle (kotlin)
+
+```kotlin
+repositories {
+    mavenCentral()
+}
+```
+
+---
+
+```kotlin
+dependencies {
+  // for jvm environment
+  implementation("io.github.universeproject:kotlin-mojang-api-jvm:{version}")
+  // for js environment
+  implementation("io.github.universeproject:kotlin-mojang-api-js:{version}")
+  // for native environment
+  implementation("io.github.universeproject:kotlin-mojang-api-native:{version}")
+}
+```
+
+### Maven
+
+```xml
+<dependencies>
+  <!-- for jvm environment -->
+  <dependency>
+      <groupId>io.github.universeproject</groupId>
+      <artifactId>kotlin-mojang-api-jvm</artifactId>
+      <version>{version}</version>
+  </dependency>
+  
+  <!-- for js environment -->
+  <dependency>
+    <groupId>io.github.universeproject</groupId>
+    <artifactId>kotlin-mojang-api-js</artifactId>
+    <version>{version}</version>
+  </dependency>
+  
+  <!-- for native environment -->
+  <dependency>
+    <groupId>io.github.universeproject</groupId>
+    <artifactId>kotlin-mojang-api-native</artifactId>
+    <version>{version}</version>
+  </dependency>
+</dependencies>
+```
+
+## API
 
 The [Mojang API Implementation](src/commonMain/kotlin/io/github/universeproject/MojangAPI.kt) allows you to easily interact
 with API. You just need to define a [Http client](https://ktor.io/docs/create-client.html) from [Ktor](https://ktor.io/).
@@ -64,9 +138,9 @@ This section is dedicated to the maintainers of the project.
 
 ## Build
 
-To build the project, you need to use the gradle app in the application [gradlew.bat](gradlew.bat) for windows
-and [gradlew](gradlew) for linux.
-`gradlew` is a wrapper to run gradle command without install it on our computer.
+To build the project, you need to use the gradle app ([gradlew.bat](gradlew.bat) for windows
+and [gradlew](gradlew) for linux).
+`gradlew` is a wrapper to run gradle command without install it on your computer.
 
 ````shell
 gradlew build
@@ -75,7 +149,7 @@ gradlew build
 ## Test
 
 The tests are created using [Kotlin test](https://kotlinlang.org/api/latest/kotlin.test/).
-To simplify the conception of tests, the common tests are placed in [JVM test](src/jvmTest) module.
+To simplify the conception of tests, some common tests are placed in [JVM test](src/jvmTest) module.
 
 ### Run tests
 
@@ -104,13 +178,13 @@ For example, if the latest version is `1.2.1`, you can create the next release t
 
 ````shell
 # Patch release
-gradle release -Prelease.useAutomaticVersion=true -Prelease.releaseVersion=1.2.2
+gradle release -Prelease.useAutomaticVersion=true -Prelease.releaseVersion=1.2.2 -Prelease.newVersion=1.2.3-SNAPSHOT
 
 # Minor release
-gradle release -Prelease.useAutomaticVersion=true -Prelease.releaseVersion=1.3.0
+gradle release -Prelease.useAutomaticVersion=true -Prelease.releaseVersion=1.3.0 -Prelease.newVersion=1.3.1-SNAPSHOT
 
 # Major release
-gradle release -Prelease.useAutomaticVersion=true -Prelease.releaseVersion=2.0.0
+gradle release -Prelease.useAutomaticVersion=true -Prelease.releaseVersion=2.0.0 -Prelease.newVersion=2.0.1-SNAPSHOT
 ````
 
 For the convention, you can check this [link](http://semver.org/).
@@ -125,9 +199,9 @@ At this moment, no artifact is published in repository.
 
 If you need new credentials to publish in repository, you need to follow this tutorial :
 
-- You need that I add you as publisher of the repository in [Sonatype issues](https://issues.sonatype.org/browse/OSSRH-83171)
-    - Create an account
-    - Ask me to add you in the publisher
+- You need me to add you as publisher of the repository in [Sonatype issues](https://issues.sonatype.org/browse/OSSRH-83171)
+  - Create an account
+  - Ask me to add you in the publishers list
 - Generate a [Gpg key pair](https://central.sonatype.org/publish/requirements/gpg/#deployment)
 - When you get the permission, you can check in the [Sonatype staging](https://s01.oss.sonatype.org/#stagingRepositories) if you can log in and see artifacts.
 - Generate [Access User Token](https://s01.oss.sonatype.org/#profile;User%20Token) for security
@@ -135,12 +209,12 @@ If you need new credentials to publish in repository, you need to follow this tu
 
 ## Automatic
 
-To publish the artifacts, you need to create a release on the repository github.
+To publish the artifacts, you need to create a release on the GitHub repository.
 When you create your release, select your created tag and explain all changes.
 
-When the release is published, **automatically**, the CI/CD will try to create and publish the artifacts in repository artifacts.
+When the release is published, **automatically**, the CI/CD will try to create and publish in the artifact repository.
 
-The CI/CD uses Github Secret to publish in repository artifact, so you could need to replace the current secret of the github repository.
+The CI/CD uses GitHub Secret to publish in artifact repository, so you may need to replace the current secret of the GitHub repository.
 
 #### Manual
 
@@ -156,7 +230,7 @@ gpg --export-secret-keys -a <keyid> > privatekey.key
 ````
 - SIGNING_PASSWORD (Gpg password)
 
-After defining the variables, you can execute one of this commande :
+After defining the variables, you can run one the following commands :
 
 ##### Manual close
 
@@ -167,7 +241,7 @@ gradle publishToSentry
 ````
 
 You can check if the artifact is correctly in [Sonatype staging](https://s01.oss.sonatype.org/#stagingRepositories) repository.
-If he's present, you can `close` to active the check by repository and if all is good, you can `release` to publish the artifact in production.
+If he's present, you can `close` to trigger the check by repository and if all is good, you can `release` to publish the artifact in production.
 
 ##### Automatic close
 
