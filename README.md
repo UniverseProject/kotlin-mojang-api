@@ -1,5 +1,6 @@
 # kotlin-mojang-api
 
+[![Discord](https://img.shields.io/discord/977166213467734056.svg?color=&label=Discord&logo=discord&style=for-the-badge)](https://discord.gg/EQyycAUZtt)
 [![Download](https://maven-badges.herokuapp.com/maven-central/io.github.universeproject/kotlin-mojang-api/badge.svg?style=for-the-badge&logo=appveyor)](https://search.maven.org/search?q=g:io.github.universeproject)
 
 This project allows interaction with [Mojang API](https://mojang-api-docs.netlify.app/)
