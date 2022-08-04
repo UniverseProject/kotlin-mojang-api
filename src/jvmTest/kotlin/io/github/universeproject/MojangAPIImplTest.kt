@@ -2,6 +2,10 @@
 
 package io.github.universeproject
 
+import io.github.universeproject.utils.generateRandomName
+import io.github.universeproject.utils.generateRandomNameWithInvalidSymbol
+import io.github.universeproject.utils.generateRandomUUID
+import io.github.universeproject.utils.generateUUIDWithInvalidSymbol
 import io.ktor.client.*
 import io.ktor.client.engine.cio.*
 import io.ktor.client.plugins.*
@@ -14,7 +18,6 @@ import kotlinx.serialization.json.Json
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.assertThrows
-import java.util.*
 import kotlin.test.*
 
 class MojangAPIImplTest {
@@ -296,15 +299,4 @@ class MojangAPIImplTest {
             }
         }
     }
-
-    private fun generateRandomNameWithInvalidSymbol() = generateRandomName().drop(1) + "&"
-
-    private fun generateRandomName(): String {
-        val validCharRanges: List<Char> = ('a'..'z') + ('A'..'Z') + ('0'..'9')
-        return generateSequence { validCharRanges.random() }.take(16).joinToString("")
-    }
-
-    private fun generateUUIDWithInvalidSymbol() = generateRandomUUID().drop(1) + "&"
-
-    private fun generateRandomUUID() = UUID.randomUUID().toString()
 }
