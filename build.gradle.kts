@@ -1,10 +1,10 @@
 plugins {
-    kotlin("multiplatform") version "1.7.20"
-    kotlin("plugin.serialization") version "1.7.20"
+    kotlin("multiplatform") version "1.7.22"
+    kotlin("plugin.serialization") version "1.7.22"
 
-    id("org.jetbrains.dokka") version "1.7.10"
+    id("org.jetbrains.dokka") version "1.7.20"
     id("io.github.gradle-nexus.publish-plugin") version "1.1.0"
-    id("net.researchgate.release") version "3.0.1"
+    id("net.researchgate.release") version "3.0.2"
     `maven-publish`
     signing
 }
@@ -28,7 +28,7 @@ kotlin {
     explicitApi = org.jetbrains.kotlin.gradle.dsl.ExplicitApiMode.Strict
     jvm {
         compilations.all {
-            kotlinOptions.jvmTarget = "1.8"
+            kotlinOptions.jvmTarget = JavaVersion.VERSION_1_8.toString()
         }
         testRuns["test"].executionTask.configure {
             useJUnitPlatform()
@@ -97,23 +97,25 @@ configure(allprojects) {
         }
     }
 
-    publishing {
-        val dokkaOutputDir = "$buildDir/dokka/${this@configure.name}"
+    val dokkaOutputDir = "$buildDir/dokka/${this@configure.name}"
 
-        tasks.dokkaHtml {
+    tasks {
+        dokkaHtml.configure {
             outputDirectory.set(file(dokkaOutputDir))
         }
+    }
 
-        val deleteDokkaOutputDir by tasks.register<Delete>("deleteDokkaOutputDirectory") {
-            delete(dokkaOutputDir)
-        }
+    val deleteDokkaOutputDir by tasks.register<Delete>("deleteDokkaOutputDirectory") {
+        delete(dokkaOutputDir)
+    }
 
-        val javadocJar = tasks.register<Jar>("javadocJar") {
-            dependsOn(deleteDokkaOutputDir, tasks.dokkaHtml)
-            archiveClassifier.set("javadoc")
-            from(dokkaOutputDir)
-        }
+    val javadocJar = tasks.register<Jar>("javadocJar") {
+        dependsOn(deleteDokkaOutputDir, tasks.dokkaHtml)
+        archiveClassifier.set("javadoc")
+        from(dokkaOutputDir)
+    }
 
+    publishing {
         publications {
             val projectGitUrl = "https://github.com/UniverseProject/kotlin-mojang-api"
             withType<MavenPublication> {
