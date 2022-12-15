@@ -97,7 +97,7 @@ dependencies {
 
 ## API
 
-The [Mojang API Implementation](src/commonMain/kotlin/io/github/universeproject/MojangAPI.kt) allows you to easily interact
+The [Mojang API Implementation](src/commonMain/kotlin/io/github/universeproject/kotlinmojangapi/MojangAPI.kt) allows you to easily interact
 with API. You just need to define a [Http client](https://ktor.io/docs/create-client.html) from [Ktor](https://ktor.io/).
 
 ```kotlin
@@ -106,8 +106,8 @@ import io.ktor.client.engine.cio.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.serialization.kotlinx.json.*
 import kotlinx.serialization.json.Json
-import io.github.universeproject.MojangAPI
-import io.github.universeproject.MojangAPIImpl
+import io.github.universeproject.kotlinmojangapi.MojangAPI
+import io.github.universeproject.kotlinmojangapi.MojangAPIImpl
 
 suspend fun main() {
     // We advise to ignore unknown keys in case of api change
@@ -117,9 +117,7 @@ suspend fun main() {
 
     // You can use another engine (other than CIO) for your http client
     val httpClient = HttpClient(CIO) {
-        // We advise to expect success, with that, an exception will be thrown
-        // if any issue with the request
-        expectSuccess = true
+        expectSuccess = false
         // Necessary to transform the response from api to a data object
         install(ContentNegotiation) {
             json(json)
