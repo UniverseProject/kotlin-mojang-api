@@ -1,4 +1,4 @@
-package io.github.universeproject
+package io.github.universeproject.kotlinmojangapi
 
 import io.ktor.util.*
 import kotlinx.serialization.SerialName
