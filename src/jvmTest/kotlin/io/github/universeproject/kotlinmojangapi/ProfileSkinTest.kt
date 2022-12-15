@@ -1,12 +1,12 @@
-package io.github.universeproject
+package io.github.universeproject.kotlinmojangapi
 
+import io.github.universeproject.kotlinmojangapi.utils.getRandomString
 import io.ktor.util.*
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.assertThrows
-import io.github.universeproject.utils.getRandomString
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

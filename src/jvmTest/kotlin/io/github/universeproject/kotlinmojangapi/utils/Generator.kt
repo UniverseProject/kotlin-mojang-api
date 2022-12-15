@@ -1,4 +1,4 @@
-package io.github.universeproject.utils
+package io.github.universeproject.kotlinmojangapi.utils
 
 import java.util.*
 

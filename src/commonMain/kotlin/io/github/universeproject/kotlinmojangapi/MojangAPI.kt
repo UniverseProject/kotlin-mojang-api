@@ -1,13 +1,14 @@
-package io.github.universeproject
+package io.github.universeproject.kotlinmojangapi
 
 import io.ktor.client.*
 import io.ktor.client.call.*
+import io.ktor.client.plugins.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
 
 /**
- * Allows interact with Mojang API.
+ * Allows to interact with Mojang API.
  */
 public interface MojangAPI {
 
@@ -62,17 +63,6 @@ public interface MojangAPI {
      * @return Information about player's skin.
      */
     public suspend fun getSkin(uuid: String): ProfileSkin?
-
-    /**
-     * Allows users to find the username history of a Minecraft profile
-     * https://mojang-api-docs.netlify.app/no-auth/name-history.html
-     * @param uuid Player's UUID.
-     * @return List of [ProfileName].
-     * The first name is the older, so the [ProfileName.changedToAt] is null, the following names
-     * are the most recent and contain all a value for [ProfileName.changedToAt].
-     * The function returns `null` if the uuid is not linked to a player.
-     */
-    public suspend fun getHistoryName(uuid: String): List<ProfileName>?
 }
 
 /**
@@ -83,7 +73,17 @@ public class MojangAPIImpl(private val client: HttpClient) : MojangAPI {
 
     override suspend fun isUsernameAvailable(name: String): Boolean {
         val response = client.get("https://account.mojang.com/available/minecraft/${name}")
-        return response.status == HttpStatusCode.NoContent
+        return when (response.status) {
+            HttpStatusCode.OK -> {
+                false
+            }
+            HttpStatusCode.NoContent, HttpStatusCode.NotFound -> {
+                true
+            }
+            else -> {
+                throw ClientRequestException(response, response.bodyAsText())
+            }
+        }
     }
 
     override suspend fun getBlockedServers(): List<String> {
@@ -93,15 +93,16 @@ public class MojangAPIImpl(private val client: HttpClient) : MojangAPI {
     }
 
     override suspend fun getUUID(name: String): ProfileId? {
-        val response = client.get("https://api.mojang.com/user/profile/agent/minecraft/name/$name")
+        val response = client.get("https://api.mojang.com/users/profiles/minecraft/$name")
         return if (response.status == HttpStatusCode.OK) response.body() else null
     }
 
     override suspend fun getUUID(names: Collection<String>): List<ProfileId> {
-        return client.post("https://api.mojang.com/profiles/minecraft") {
+        val response = client.post("https://api.mojang.com/profiles/minecraft") {
             contentType(ContentType.Application.Json)
             setBody(names)
-        }.body()
+        }
+        return if (response.status == HttpStatusCode.OK) response.body() else throw ClientRequestException(response, response.bodyAsText())
     }
 
     override suspend fun getName(uuid: String): ProfileId? {
@@ -111,11 +112,6 @@ public class MojangAPIImpl(private val client: HttpClient) : MojangAPI {
 
     override suspend fun getSkin(uuid: String): ProfileSkin? {
         val response = client.get("https://sessionserver.mojang.com/session/minecraft/profile/$uuid?unsigned=false")
-        return if (response.status == HttpStatusCode.OK) response.body() else null
-    }
-
-    override suspend fun getHistoryName(uuid: String): List<ProfileName>? {
-        val response = client.get("https://api.mojang.com/user/profile/${uuid}/names")
         return if (response.status == HttpStatusCode.OK) response.body() else null
     }
 
