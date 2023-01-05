@@ -74,7 +74,11 @@ class MojangAPIImplTest {
 
         @Test
         fun `with a player name with invalid character`() = runTest {
-            assertTrue { mojangApi.isUsernameAvailable(generateRandomNameWithInvalidSymbol()) }
+            assertThrows<ClientRequestException> {
+                runBlocking {
+                    mojangApi.isUsernameAvailable(generateRandomNameWithInvalidSymbol())
+                }
+            }
         }
     }
 
