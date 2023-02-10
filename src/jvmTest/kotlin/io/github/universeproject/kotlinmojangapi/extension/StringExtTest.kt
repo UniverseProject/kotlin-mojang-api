@@ -42,8 +42,8 @@ class StringExtTest {
 
         @Test
         fun `should return the formatted string with a uuid format with uppercase letters`() {
-            val unformatted = "aCfE1234-12X4-1wW4-12F4-123456T89012"
-            val formatted = "aCfE1234-12X4-1wW4-12F4-123456T89012"
+            val unformatted = "aCfB1234-12A4-1dD4-12F4-123456E89012"
+            val formatted = "aCfB1234-12A4-1dD4-12F4-123456E89012"
             assertEquals(formatted, unformatted.formatUUID())
         }
     }
