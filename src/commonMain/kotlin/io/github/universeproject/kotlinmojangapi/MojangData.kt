@@ -1,5 +1,6 @@
 package io.github.universeproject.kotlinmojangapi
 
+import io.github.universeproject.kotlinmojangapi.serializer.StringUUIDSerializer
 import io.ktor.util.*
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -17,7 +18,11 @@ private const val PROPERTY_TEXTURES = "textures"
  * @property id Player's uuid.
  */
 @Serializable
-public data class ProfileId(val name: String, val id: String)
+public data class ProfileId(
+    val name: String,
+    @Serializable(with = StringUUIDSerializer::class)
+    val id: String
+)
 
 /**
  * Expected response of the Mojang api to retrieve name with their change date.
@@ -39,6 +44,7 @@ public data class ProfileName(val name: String, val changedToAt: Long = 0)
  */
 @Serializable
 public data class ProfileSkin(
+    @Serializable(with = StringUUIDSerializer::class)
     val id: String,
     val name: String,
     val properties: List<Property> = emptyList(),
@@ -80,6 +86,7 @@ public data class ProfileSkin(
 @Serializable
 public data class ProfileSkinDecoded(
     val timestamp: Long,
+    @Serializable(with = StringUUIDSerializer::class)
     val profileId: String,
     val profileName: String,
     val textures: Textures
