@@ -47,6 +47,10 @@ kotlin {
     }
 
     sourceSets {
+        val ktorVersion="2.2.3"
+        val ktSerializationVersion="1.4.1"
+        val coroutineVersion="1.6.4"
+
         val commonMain by getting {
             dependencies {
                 implementation("io.ktor:ktor-client-core:$ktorVersion")
