@@ -48,7 +48,7 @@ kotlin {
 
     sourceSets {
         val ktorVersion="2.3.0"
-        val ktSerializationVersion="1.5.0"
+        val ktSerializationVersion="1.5.1"
         val coroutineVersion="1.6.4"
 
         val commonMain by getting {
