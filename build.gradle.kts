@@ -1,8 +1,8 @@
 plugins {
-    kotlin("multiplatform") version "1.8.20"
-    kotlin("plugin.serialization") version "1.8.20"
+    kotlin("multiplatform") version "1.8.22"
+    kotlin("plugin.serialization") version "1.8.22"
 
-    id("org.jetbrains.dokka") version "1.8.10"
+    id("org.jetbrains.dokka") version "1.8.20"
     id("io.github.gradle-nexus.publish-plugin") version "1.3.0"
     id("net.researchgate.release") version "3.0.2"
     `maven-publish`
@@ -47,9 +47,9 @@ kotlin {
     }
 
     sourceSets {
-        val ktorVersion="2.3.0"
+        val ktorVersion="2.3.1"
         val ktSerializationVersion="1.5.1"
-        val coroutineVersion="1.6.4"
+        val coroutineVersion="1.7.1"
 
         val commonMain by getting {
             dependencies {
