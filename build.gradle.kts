@@ -20,10 +20,6 @@ repositories {
     mavenCentral()
 }
 
-val ktorVersion: String by project
-val ktSerializationVersion: String by project
-val coroutineVersion: String by project
-
 kotlin {
     explicitApi = org.jetbrains.kotlin.gradle.dsl.ExplicitApiMode.Strict
     jvm {
@@ -50,6 +46,8 @@ kotlin {
         val ktorVersion="2.3.1"
         val ktSerializationVersion="1.5.1"
         val coroutineVersion="1.7.1"
+        val slf4jVersion="2.0.7"
+        val loggingVersion="3.0.5"
 
         val commonMain by getting {
             dependencies {
@@ -71,6 +69,8 @@ kotlin {
         val jvmTest by getting {
             dependencies {
                 implementation("io.ktor:ktor-client-cio:$ktorVersion")
+                implementation("org.slf4j:slf4j-simple:$slf4jVersion")
+                implementation("io.github.microutils:kotlin-logging-jvm:$loggingVersion")
             }
         }
         val jsMain by getting

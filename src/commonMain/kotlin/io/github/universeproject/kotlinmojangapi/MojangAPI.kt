@@ -72,7 +72,7 @@ public interface MojangAPI {
 public class MojangAPIImpl(private val client: HttpClient) : MojangAPI {
 
     override suspend fun isUsernameAvailable(name: String): Boolean {
-        val response = client.get("https://account.mojang.com/available/minecraft/${name}")
+        val response = client.get("https://api.mojang.com/users/profiles/minecraft/${name}")
         return when (response.status) {
             HttpStatusCode.OK -> {
                 false
