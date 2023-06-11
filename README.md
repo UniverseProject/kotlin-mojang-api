@@ -7,7 +7,7 @@ using [Kotlin](https://kotlinlang.org/) and [coroutine](https://kotlinlang.org/d
 
 ## Environment
 
-We have chosen to use [Kotlin](https://kotlinlang.org/) to simplify our codes, learn the language and take advantage of
+We have chosen to use [Kotlin](https://kotlinlang.org/) to simplify our code, learn the language and take advantage of
 coroutines for the I/O operations.
 
 [Gradle](https://gradle.org/) is used to manage dependencies because he's the more friendly with Kotlin.
@@ -109,7 +109,7 @@ import io.github.universeproject.kotlinmojangapi.MojangAPI
 import io.github.universeproject.kotlinmojangapi.MojangAPIImpl
 
 suspend fun main() {
-    // We advise to ignore unknown keys in case of api change
+    // We advise ignoring unknown keys in case of api change
     val json = Json {
         ignoreUnknownKeys = true
     }
@@ -157,37 +157,13 @@ gradlew allTests
 
 ### Create tag
 
-When you make change on the projet, you need to create a release of the main branch.
+When you make change on the project, you need to create a release of the main branch.
 
-Firstly, you need to create a specific tag version.
+First, set the release version in [gradle.properties](gradle.properties) file.
 
-A [gradle plugin](https://github.com/researchgate/gradle-release) is used to simplify this operation.
-Basically, you can check the official documentation, but you only need to make this following commands.
-
-To keep coherence, you need to check the last version release for the project.
-
-````shell
-gradle release -Prelease.useAutomaticVersion=true -Prelease.releaseVersion=<version to release>
-````
-
-For example, if the latest version is `1.2.1`, you can create the next release tag using :
-
-````shell
-# Patch release
-gradle release -Prelease.useAutomaticVersion=true -Prelease.releaseVersion=1.2.2 -Prelease.newVersion=1.2.3-SNAPSHOT
-
-# Minor release
-gradle release -Prelease.useAutomaticVersion=true -Prelease.releaseVersion=1.3.0 -Prelease.newVersion=1.3.1-SNAPSHOT
-
-# Major release
-gradle release -Prelease.useAutomaticVersion=true -Prelease.releaseVersion=2.0.0 -Prelease.newVersion=2.0.1-SNAPSHOT
-````
-
-For the convention, you can check this [link](http://semver.org/).
-
-After these commands, several commits has been made on `main` branch and a new `tag` was created.
-
-At this moment, no artifact is published in repository.
+Next, go to the release page of the repository and create a new release with the version number.
+The tag name must be the same as the version number with a `v` prefix.
+For example, if the version is `1.0.0`, the tag name must be `v1.0.0`.
 
 ### Create release
 
@@ -197,11 +173,11 @@ If you need new credentials to publish in repository, you need to follow this tu
 
 - You need me to add you as publisher of the repository in [Sonatype issues](https://issues.sonatype.org/browse/OSSRH-83171)
   - Create an account
-  - Ask me to add you in the publishers list
+  - Ask me to add you in the publisher list
 - Generate a [Gpg key pair](https://central.sonatype.org/publish/requirements/gpg/#deployment)
 - When you get the permission, you can check in the [Sonatype staging](https://s01.oss.sonatype.org/#stagingRepositories) if you can log in and see artifacts.
 - Generate [Access User Token](https://s01.oss.sonatype.org/#profile;User%20Token) for security
-- You can publish in repository artifact !
+- You can publish in repository artifact!
 
 ## Automatic
 
@@ -214,7 +190,8 @@ The CI/CD uses GitHub Secret to publish in artifact repository, so you may need 
 
 #### Manual
 
-If, for X reason, you want to publish the artifact yourself, you need to define several environment variable using by gradle script :
+If, for X reason, you want to publish the artifact yourself,
+you need to define several environment variables using by gradle script :
 
 - REPOSITORY_USERNAME (Access User Token username)
 - REPOSITORY_PASSWORD (Access User Token password)
@@ -226,11 +203,13 @@ gpg --export-secret-keys -a <keyid> > privatekey.key
 ````
 - SIGNING_PASSWORD (Gpg password)
 
-After defining the variables, you can run one the following commands :
+After defining the variables, you can run one of the following commands:
 
 ##### Manual close
 
-Manual close action allows to verify in the [Sonatype staging](https://s01.oss.sonatype.org/#stagingRepositories) repository if all files are correctly published.
+Manual close action allows
+verifying in the [Sonatype staging](https://s01.oss.sonatype.org/#stagingRepositories) repository
+if all files are correctly published.
 
 ````shell
 gradle publishToSentry
