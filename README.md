@@ -116,7 +116,6 @@ suspend fun main() {
 
     // You can use another engine (other than CIO) for your http client
     val httpClient = HttpClient(CIO) {
-        expectSuccess = false
         // Necessary to transform the response from api to a data object
         install(ContentNegotiation) {
             json(json)
