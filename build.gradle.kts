@@ -43,7 +43,7 @@ kotlin {
     }
 
     sourceSets {
-        val ktorVersion="2.3.1"
+        val ktorVersion="2.3.2"
         val ktSerializationVersion="1.5.1"
         val coroutineVersion="1.7.1"
         val slf4jVersion="2.0.7"
